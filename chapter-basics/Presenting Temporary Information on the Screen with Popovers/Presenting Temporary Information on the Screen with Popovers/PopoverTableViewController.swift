@@ -24,14 +24,14 @@
 import UIKit
 
 extension Array{
-  subscript(path: NSIndexPath) -> T{
+  subscript(path: IndexPath) -> Any{
     return self[path.row]
   }
 }
 
 extension NSIndexPath{
   class func firstIndexPath() -> NSIndexPath{
-    return NSIndexPath(forRow: 0, inSection: 0)
+    return NSIndexPath(row: 0, section: 0)
   }
 }
 
@@ -53,51 +53,48 @@ class PopoverTableViewController: UITableViewController {
   }()
   
   var cancelBarButtonItem: UIBarButtonItem!
-  var selectionHandler: ((selectedItem: String) -> Void)?
+    var selectionHandler: ((_ selectedItem: String) -> Void)?
 
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    tableView.registerClass(UITableViewCell.classForCoder(),
+    tableView.register(UITableViewCell.classForCoder(),
       forCellReuseIdentifier: TableViewValues.identifier)
     
-    cancelBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain,
-      target: self, action: "performCancel")
+    cancelBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain,
+                                          target: self, action: Selector(("performCancel")))
     navigationItem.leftBarButtonItem = cancelBarButtonItem
     
   }
   
   func performCancel(){
-    dismissViewControllerAnimated(true, completion: nil)
+    dismiss(animated: true, completion: nil)
   }
   
-  override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     preferredContentSize = CGSize(width: 300, height: 200)
   }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedItem = items[indexPath]
+        selectionHandler?(selectedItem as! String)
+        dismiss(animated: true, completion: nil)
+
+    }
   
-  override func tableView(tableView: UITableView,
-    didSelectRowAtIndexPath indexPath: NSIndexPath) {
-      let selectedItem = items[indexPath]
-      selectionHandler?(selectedItem: selectedItem)
-      dismissViewControllerAnimated(true, completion: nil)
-  }
-  
-  override func tableView(tableView: UITableView,
+    override func tableView(_ tableView: UITableView,
     numberOfRowsInSection section: Int) -> Int {
     return items.count
   }
   
-  override func tableView(tableView: UITableView,
-    cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    
-    let cell = tableView.dequeueReusableCellWithIdentifier(
-      TableViewValues.identifier, forIndexPath: indexPath) as UITableViewCell
-    
-    cell.textLabel!.text = items[indexPath]
-    
-    return cell
-    
-  }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: TableViewValues.identifier, for: indexPath as IndexPath) as UITableViewCell
+        
+        cell.textLabel!.text = items[indexPath] as! String
+        
+        return cell
+    }
   
 }

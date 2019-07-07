@@ -28,7 +28,7 @@ class ViewController: UIViewController {
   var selectedItem: String?
   
   lazy var popoverContentController: UINavigationController = {
-    let controller = PopoverTableViewController(style: .Plain)
+    let controller = PopoverTableViewController(style: .plain)
     controller.selectionHandler = self.selectionHandler
     let navigationController = UINavigationController(
       rootViewController: controller)
@@ -48,8 +48,8 @@ class ViewController: UIViewController {
   }
   
   @IBAction func displayPopover(sender: UIBarButtonItem){
-    popoverController.presentPopoverFromBarButtonItem(sender,
-      permittedArrowDirections: .Any,
+    popoverController.present(from: sender,
+                              permittedArrowDirections: .any,
       animated: true)
   }
   
